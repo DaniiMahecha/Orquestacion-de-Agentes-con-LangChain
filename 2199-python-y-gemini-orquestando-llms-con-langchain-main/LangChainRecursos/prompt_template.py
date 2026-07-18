@@ -2,7 +2,7 @@ from langchain_core.prompts import ChatPromptTemplate, PromptTemplate
 from langchain_core.output_parsers import JsonOutputParser
 from detalles_imagen_json import DetallesImagenJSON
 
-# FORMATO DE SALIDA EN JSON
+# JSON PARSER
 json_parser = JsonOutputParser(
     pydantic_object=DetallesImagenJSON
 )
