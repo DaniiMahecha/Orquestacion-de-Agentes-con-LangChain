@@ -1,4 +1,11 @@
 from langchain_core.prompts import ChatPromptTemplate, PromptTemplate 
+from langchain_core.output_parsers import JsonOutputParser
+from detalles_imagen_json import DetallesImagenJSON
+
+# FORMATO DE SALIDA EN JSON
+json_parser = JsonOutputParser(
+    pydantic_object=DetallesImagenJSON
+)
 
 # TEMPLATE PARA LLM MULTIMODALES
 template_entrada = ChatPromptTemplate.from_messages(
@@ -39,6 +46,12 @@ template_salida = PromptTemplate(
 
                 #RESULTADO DE LA IMAGEN
                 {image_analysis}
+
+                #FORMATO DE SALIDA
+                {output_format}
                 """,
-                input_variables=["image_analysis"]
+                input_variables=["image_analysis"],
+                partial_variables={
+                    "output_format":json_parser.get_format_instructions
+                }
 )
