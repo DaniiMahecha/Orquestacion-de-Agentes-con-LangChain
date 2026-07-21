@@ -1,11 +1,34 @@
 from langchain_core.prompts import ChatPromptTemplate, PromptTemplate 
 from langchain_core.output_parsers import JsonOutputParser
 from detalles_imagen_json import DetallesImagenJSON
+from langchain import hub
 
 # JSON PARSER
 json_parser = JsonOutputParser(
     pydantic_object=DetallesImagenJSON
 )
+
+# TEMPLATE PROMPT LLMs AGENT
+agent_prompt = hub.pull("hwchase17/react")
+# Answer the following questions as best you can. You have access to the following tools:
+# 
+# {tools}
+#
+# Use the following format:
+#
+# Question: the input question you must answer
+# Thought: you should always think about what to do
+# Action: the action to take, should be one of [{tool_names}]
+# Action Input: the input to the action
+# Observation: the result of the action
+# ... (this Thought/Action/Action Input/Observation can repeat N times)
+# Thought: I now know the final answer
+# Final Answer: the final answer to the original input question
+#
+# Begin!
+#
+# Question: {input}
+# Thought:{agent_scratchpad}
 
 # TEMPLATE PARA LLM MULTIMODALES
 template_entrada = ChatPromptTemplate.from_messages(
