@@ -1,6 +1,6 @@
 from langchain.tools import BaseTool
 from LangChainRecursos import prompt_template
-from LLMs import LLM_Gemini, LLM_Cohere
+from LLMs import LLM_Gemini
 from detalles_imagen_json import DetallesImagenJSON
 from langchain_core.output_parsers import JsonOutputParser, StrOutputParser
 from my_helper import encode_image
@@ -13,7 +13,7 @@ class ImageAnalysisTool(BaseTool):
                         realizar un análisis de imagen.
 
                         # ENTRADAS REQUERIDAS
-                        - 'nombre_imagen' (str) : Nombre de la imagen a ser analizada con extensión JPG.
+                        - 'image_name' (str) : Nombre de la imagen a ser analizada con extensión JPG.
                         Ejemplo: test.jps o test.jpeg
                         """
     return_direct:bool = False
@@ -22,16 +22,15 @@ class ImageAnalysisTool(BaseTool):
         action= ast.literal_eval(action)
         image_route = action.get("image_name","")
 
-        llmGemini = LLM_Gemini
-        llmCohere = LLM_Cohere
+        llmGemini = LLM_Gemini.llmGemini
 
-        image = encode_image(f'datos{image_route}')
+        image = encode_image(f'datos/{image_route}')
         json_parser = JsonOutputParser(
             pydantic_object=DetallesImagenJSON
         )
 
         image_analysis = prompt_template.template_entrada | llmGemini | StrOutputParser()
-        sumary = prompt_template.template_salida | llmCohere | json_parser
+        sumary = prompt_template.template_salida | llmGemini | json_parser
 
         result = (image_analysis | sumary)  
         response=result.invoke({"image":image})
